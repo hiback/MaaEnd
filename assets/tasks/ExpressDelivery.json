@@ -1,0 +1,244 @@
+{
+    "task": [
+        {
+            "name": "ExpressDelivery",
+            "label": "$task.ExpressDelivery.label",
+            "entry": "ExpressDeliveryMain",
+            "description": "$task.ExpressDelivery.description",
+            "option": [
+                "ExpressDeliveryStartPoint",
+                "ExpressDeliveryDepotZiplineCoords",
+                "ExpressDeliveryRoutes"
+            ],
+            "controller": [
+                "Win32-Front"
+            ],
+            "group": [
+                "daily"
+            ]
+        }
+    ],
+    "option": {
+        "ExpressDeliveryStartPoint": {
+            "type": "select",
+            "label": "$option.ExpressDeliveryStartPoint.label",
+            "description": "$option.ExpressDeliveryStartPoint.description",
+            "default_case": "FullRoute",
+            "cases": [
+                {
+                    "name": "FullRoute",
+                    "label": "$option.ExpressDeliveryStartPoint.cases.FullRoute.label",
+                    "option": [
+                        "ExpressDeliveryTeleportAnchor",
+                        "ExpressDeliveryTeleportZiplineCoords",
+                        "ExpressDeliveryPickupAreaRoute"
+                    ]
+                },
+                {
+                    "name": "AfterPickup",
+                    "label": "$option.ExpressDeliveryStartPoint.cases.AfterPickup.label",
+                    "pipeline_override": {
+                        "ExpressDeliveryMain": {
+                            "next": [
+                                "ExpressDeliveryResumeAfterPickup"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "ExpressDeliveryTeleportAnchor": {
+            "type": "select",
+            "label": "$option.ExpressDeliveryTeleportAnchor.label",
+            "description": "$option.ExpressDeliveryTeleportAnchor.description",
+            "default_case": "UpperAnchor",
+            "cases": [
+                {
+                    "name": "UpperAnchor",
+                    "label": "$option.ExpressDeliveryTeleportAnchor.cases.UpperAnchor.label",
+                    "pipeline_override": {
+                        "ExpressDeliveryTeleport": {
+                            "action": {
+                                "type": "Custom",
+                                "param": {
+                                    "custom_action": "SubTask",
+                                    "custom_action_param": {
+                                        "sub": [
+                                            "SceneEnterWorldWulingWulingCity5"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "LeftAnchor",
+                    "label": "$option.ExpressDeliveryTeleportAnchor.cases.LeftAnchor.label",
+                    "pipeline_override": {
+                        "ExpressDeliveryTeleport": {
+                            "action": {
+                                "type": "Custom",
+                                "param": {
+                                    "custom_action": "SubTask",
+                                    "custom_action_param": {
+                                        "sub": [
+                                            "SceneEnterWorldWulingWulingCity6"
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        "ExpressDeliveryPickupAreaRoute": {
+            "type": "input",
+            "label": "$option.ExpressDeliveryPickupAreaRoute.label",
+            "description": "$option.ExpressDeliveryPickupAreaRoute.description",
+            "inputs": [
+                {
+                    "name": "PickupAreaRoute",
+                    "label": "$option.ExpressDeliveryPickupAreaRoute.inputs.PickupAreaRoute.label",
+                    "default": "move:180,end"
+                }
+            ],
+            "pipeline_override": {
+                "ExpressDeliveryRoutePickupArea": {
+                    "custom_action_param": {
+                        "route": "{PickupAreaRoute}",
+                        "target_name": "取货区"
+                    }
+                }
+            }
+        },
+        "ExpressDeliveryTeleportZiplineCoords": {
+            "type": "input",
+            "label": "$option.ExpressDeliveryTeleportZiplineCoords.label",
+            "description": "$option.ExpressDeliveryTeleportZiplineCoords.description",
+            "inputs": [
+                {
+                    "name": "WalkToZiplineX",
+                    "label": "$option.ExpressDeliveryTeleportZiplineCoords.inputs.WalkToZiplineX.label",
+                    "pipeline_type": "int",
+                    "default": "662",
+                    "verify": "^\\d+$"
+                },
+                {
+                    "name": "WalkToZiplineY",
+                    "label": "$option.ExpressDeliveryTeleportZiplineCoords.inputs.WalkToZiplineY.label",
+                    "pipeline_type": "int",
+                    "default": "720",
+                    "verify": "^\\d+$"
+                }
+            ],
+            "pipeline_override": {
+                "ExpressDeliveryWalkToZipline": {
+                    "custom_action_param": {
+                        "map_name": "map02_lv002",
+                        "path": [
+                            {
+                                "action": "ZONE",
+                                "zone_id": "Wuling_Base"
+                            },
+                            [
+                                "{WalkToZiplineX}",
+                                "{WalkToZiplineY}",
+                                true
+                            ]
+                        ]
+                    }
+                }
+            }
+        },
+        "ExpressDeliveryDepotZiplineCoords": {
+            "type": "input",
+            "label": "$option.ExpressDeliveryDepotZiplineCoords.label",
+            "description": "$option.ExpressDeliveryDepotZiplineCoords.description",
+            "inputs": [
+                {
+                    "name": "WalkBackToZiplineX",
+                    "label": "$option.ExpressDeliveryDepotZiplineCoords.inputs.WalkBackToZiplineX.label",
+                    "pipeline_type": "int",
+                    "default": "675",
+                    "verify": "^\\d+$"
+                },
+                {
+                    "name": "WalkBackToZiplineY",
+                    "label": "$option.ExpressDeliveryDepotZiplineCoords.inputs.WalkBackToZiplineY.label",
+                    "pipeline_type": "int",
+                    "default": "773",
+                    "verify": "^\\d+$"
+                }
+            ],
+            "pipeline_override": {
+                "ExpressDeliveryWalkBackToZipline": {
+                    "custom_action_param": {
+                        "map_name": "map02_lv002",
+                        "path": [
+                            {
+                                "action": "ZONE",
+                                "zone_id": "Wuling_Base"
+                            },
+                            [
+                                "{WalkBackToZiplineX}",
+                                "{WalkBackToZiplineY}",
+                                true
+                            ]
+                        ]
+                    }
+                }
+            }
+        },
+        "ExpressDeliveryRoutes": {
+            "type": "input",
+            "label": "$option.ExpressDeliveryRoutes.label",
+            "description": "$option.ExpressDeliveryRoutes.description",
+            "inputs": [
+                {
+                    "name": "MaterialsResearchInstituteRoute",
+                    "label": "$option.ExpressDeliveryRoutes.inputs.MaterialsResearchInstituteRoute.label"
+                },
+                {
+                    "name": "ResourceRecyclingStationCityRoute",
+                    "label": "$option.ExpressDeliveryRoutes.inputs.ResourceRecyclingStationCityRoute.label"
+                },
+                {
+                    "name": "TechnicalProductionOfficeOutskirtsRoute",
+                    "label": "$option.ExpressDeliveryRoutes.inputs.TechnicalProductionOfficeOutskirtsRoute.label"
+                },
+                {
+                    "name": "ObservatoryRoute",
+                    "label": "$option.ExpressDeliveryRoutes.inputs.ObservatoryRoute.label"
+                }
+            ],
+            "pipeline_override": {
+                "ExpressDeliveryRouteMaterialsResearchInstitute": {
+                    "custom_action_param": {
+                        "route": "{MaterialsResearchInstituteRoute}",
+                        "target_name": "材料研究所"
+                    }
+                },
+                "ExpressDeliveryRouteResourceRecyclingStationCity": {
+                    "custom_action_param": {
+                        "route": "{ResourceRecyclingStationCityRoute}",
+                        "target_name": "资源回收站（城内）"
+                    }
+                },
+                "ExpressDeliveryRouteTechnicalProductionOfficeOutskirts": {
+                    "custom_action_param": {
+                        "route": "{TechnicalProductionOfficeOutskirtsRoute}",
+                        "target_name": "技术生产办公室（郊外）"
+                    }
+                },
+                "ExpressDeliveryRouteObservatory": {
+                    "custom_action_param": {
+                        "route": "{ObservatoryRoute}",
+                        "target_name": "观测站"
+                    }
+                }
+            }
+        }
+    }
+}

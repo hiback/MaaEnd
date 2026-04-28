@@ -1,0 +1,55 @@
+{
+    "ExpressDeliveryMain": {
+        "desc": "快递配送任务入口",
+        "next": [
+            "ExpressDeliveryTeleport"
+        ]
+    },
+    "ExpressDeliveryResumeAfterPickup": {
+        "desc": "从取货完成后继续执行后续流程",
+        "next": [
+            "ExpressDeliveryResumeInWorld",
+            "ExpressDeliveryResumeStateInvalid"
+        ]
+    },
+    "ExpressDeliveryResumeInWorld": {
+        "desc": "已在大世界时，复用取货确认节点继续后续流程",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InWorld"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryPickupConfirm",
+            "ExpressDeliveryResumeMissingCargo"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "检测到大世界界面，复用取货确认节点继续流程"
+        }
+    },
+    "ExpressDeliveryResumeMissingCargo": {
+        "desc": "已在大世界但未识别到手持货物图标",
+        "action": {
+            "type": "StopTask",
+            "param": {}
+        },
+        "focus": {
+            "Node.Action.Starting": "已识别到大世界界面，但未识别到左上角手持货物图标，请检查取货状态或图标识别范围"
+        }
+    },
+    "ExpressDeliveryResumeStateInvalid": {
+        "desc": "从取货完成后继续时的兜底提示",
+        "action": {
+            "type": "StopTask",
+            "param": {}
+        },
+        "focus": {
+            "Node.Action.Starting": "未识别到大世界界面；请在取货点附近的大世界且货物在手时启动\u201c取货后继续\u201d"
+        }
+    }
+}

@@ -1,0 +1,342 @@
+{
+    "ExpressDeliveryEnterBigMap": {
+        "desc": "打开武陵城大地图用于运送目标识别",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "SubTask",
+                "custom_action_param": {
+                    "sub": [
+                        "SceneEnterMapWulingWulingCity"
+                    ]
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryPanToT1"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已进入武陵城大地图"
+        }
+    },
+    "ExpressDeliveryPanToT1": {
+        "desc": "平移大地图将候选 T1 [170, 679] 纳入视口",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InMapWulingWulingCity"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapTrackerBigMapPick",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "target": [
+                        170,
+                        679
+                    ],
+                    "on_find": "DoNothing"
+                }
+            }
+        },
+        "post_wait_freezes": 300,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryCheckT1",
+            "ExpressDeliveryPanToT2"
+        ]
+    },
+    "ExpressDeliveryCheckT1": {
+        "desc": "验证 T1 [170, 679] 是否为运送目标",
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "MapTrackerFindMarkerOnBigMap",
+                "custom_recognition_param": {
+                    "map_name": "map02_lv002",
+                    "target": [
+                        170,
+                        679
+                    ],
+                    "template": "ExpressDelivery/DeliveryTargetIcon.png",
+                    "green_mask": true,
+                    "threshold": 0.8,
+                    "tolerance": 24
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryTargetT1Hit"
+        ]
+    },
+    "ExpressDeliveryPanToT2": {
+        "desc": "平移大地图将候选 T2 [230, 604] 纳入视口",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InMapWulingWulingCity"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapTrackerBigMapPick",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "target": [
+                        230,
+                        604
+                    ],
+                    "on_find": "DoNothing"
+                }
+            }
+        },
+        "post_wait_freezes": 300,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryCheckT2",
+            "ExpressDeliveryPanToT3"
+        ]
+    },
+    "ExpressDeliveryCheckT2": {
+        "desc": "验证 T2 [230, 604] 是否为运送目标",
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "MapTrackerFindMarkerOnBigMap",
+                "custom_recognition_param": {
+                    "map_name": "map02_lv002",
+                    "target": [
+                        230,
+                        604
+                    ],
+                    "template": "ExpressDelivery/DeliveryTargetIcon.png",
+                    "green_mask": true,
+                    "threshold": 0.8,
+                    "tolerance": 24
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryTargetT2Hit"
+        ]
+    },
+    "ExpressDeliveryPanToT3": {
+        "desc": "平移大地图将候选 T3 [248, 209] 纳入视口",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InMapWulingWulingCity"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapTrackerBigMapPick",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "target": [
+                        248,
+                        209
+                    ],
+                    "on_find": "DoNothing"
+                }
+            }
+        },
+        "post_wait_freezes": 300,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryCheckT3",
+            "ExpressDeliveryPanToT4"
+        ]
+    },
+    "ExpressDeliveryCheckT3": {
+        "desc": "验证 T3 [248, 209] 是否为运送目标",
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "MapTrackerFindMarkerOnBigMap",
+                "custom_recognition_param": {
+                    "map_name": "map02_lv002",
+                    "target": [
+                        248,
+                        209
+                    ],
+                    "template": "ExpressDelivery/DeliveryTargetIcon.png",
+                    "green_mask": true,
+                    "threshold": 0.8,
+                    "tolerance": 24
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryTargetT3Hit"
+        ]
+    },
+    "ExpressDeliveryPanToT4": {
+        "desc": "平移大地图将候选 T4 [610, 370] 纳入视口",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InMapWulingWulingCity"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapTrackerBigMapPick",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "target": [
+                        610,
+                        370
+                    ],
+                    "on_find": "DoNothing"
+                }
+            }
+        },
+        "post_wait_freezes": 300,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryCheckT4",
+            "ExpressDeliveryTargetDetectFailed"
+        ]
+    },
+    "ExpressDeliveryCheckT4": {
+        "desc": "验证 T4 [610, 370] 是否为运送目标",
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "MapTrackerFindMarkerOnBigMap",
+                "custom_recognition_param": {
+                    "map_name": "map02_lv002",
+                    "target": [
+                        610,
+                        370
+                    ],
+                    "template": "ExpressDelivery/DeliveryTargetIcon.png",
+                    "green_mask": true,
+                    "threshold": 0.8,
+                    "tolerance": 24
+                }
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryTargetT4Hit"
+        ]
+    },
+    "ExpressDeliveryTargetT1Hit": {
+        "desc": "识别到运送目标：材料研究所 [170, 679]",
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "SubTask",
+                "custom_action_param": {
+                    "sub": [
+                        "ExpressDeliveryPrepareRoute"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "ExpressDeliveryRouteMaterialsResearchInstitute"
+        ],
+        "focus": {
+            "Node.Action.Starting": "运送目标为材料研究所 [170, 679]"
+        }
+    },
+    "ExpressDeliveryTargetT2Hit": {
+        "desc": "识别到运送目标：资源回收站（城内） [230, 604]",
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "SubTask",
+                "custom_action_param": {
+                    "sub": [
+                        "ExpressDeliveryPrepareRoute"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "ExpressDeliveryRouteResourceRecyclingStationCity"
+        ],
+        "focus": {
+            "Node.Action.Starting": "运送目标为资源回收站（城内） [230, 604]"
+        }
+    },
+    "ExpressDeliveryTargetT3Hit": {
+        "desc": "识别到运送目标：技术生产办公室（郊外） [248, 209]",
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "SubTask",
+                "custom_action_param": {
+                    "sub": [
+                        "ExpressDeliveryPrepareRoute"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "ExpressDeliveryRouteTechnicalProductionOfficeOutskirts"
+        ],
+        "focus": {
+            "Node.Action.Starting": "运送目标为技术生产办公室（郊外） [248, 209]"
+        }
+    },
+    "ExpressDeliveryTargetT4Hit": {
+        "desc": "识别到运送目标：观测站 [610, 370]",
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "SubTask",
+                "custom_action_param": {
+                    "sub": [
+                        "ExpressDeliveryPrepareRoute"
+                    ]
+                }
+            }
+        },
+        "next": [
+            "ExpressDeliveryRouteObservatory"
+        ],
+        "focus": {
+            "Node.Action.Starting": "运送目标为观测站 [610, 370]"
+        }
+    },
+    "ExpressDeliveryTargetDetectFailed": {
+        "desc": "未能识别到任一候选运送目标",
+        "action": {
+            "type": "StopTask",
+            "param": {}
+        },
+        "focus": {
+            "Node.Action.Starting": "运送目标识别失败，请检查大地图状态与候选坐标"
+        }
+    }
+}

@@ -20,6 +20,8 @@ import (
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/common/subtask"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/dailyrewards"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/essencefilter"
+	"github.com/MaaXYZ/MaaEnd/agent/go-service/expressdelivery"
+	"github.com/MaaXYZ/MaaEnd/agent/go-service/expressionrecognition"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/itemtransfer"
 	maptracker "github.com/MaaXYZ/MaaEnd/agent/go-service/map-tracker"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/pkg/resource"
@@ -66,6 +68,7 @@ func registerAll() {
 	batchaddfriends.Register()
 	autoecofarm.Register()
 	autofight.Register()
+	expressdelivery.Register()
 	visitfriends.Register()
 	scenemanager.Register()
 	autostockstaple.Register()

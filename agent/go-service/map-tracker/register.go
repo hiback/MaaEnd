@@ -10,6 +10,7 @@ func Register() {
 	maa.AgentServerRegisterCustomRecognition("MapTrackerInfer", &MapTrackerInfer{})
 	maa.AgentServerRegisterCustomRecognition("MapTrackerBigMapInfer", &MapTrackerBigMapInfer{})
 	maa.AgentServerRegisterCustomRecognition("MapTrackerAssertLocation", &MapTrackerAssertLocation{})
+	maa.AgentServerRegisterCustomRecognition("MapTrackerFindMarkerOnBigMap", &MapTrackerFindMarkerOnBigMap{})
 	maa.AgentServerRegisterCustomAction("MapTrackerMove", &MapTrackerMove{})
 	maa.AgentServerRegisterCustomAction("MapTrackerBigMapPick", &MapTrackerBigMapPick{})
 }

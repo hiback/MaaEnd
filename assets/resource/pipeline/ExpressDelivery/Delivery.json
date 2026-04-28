@@ -1,0 +1,675 @@
+{
+    "ExpressDeliveryPrepareRoute": {
+        "desc": "退出大地图返回大世界（4 条路线共用）",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "SubTask",
+                "custom_action_param": {
+                    "sub": [
+                        "SceneAnyEnterWorld"
+                    ]
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWalkBackToZipline"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已退出大地图，开始返回滑索起点"
+        }
+    },
+    "ExpressDeliveryWalkBackToZipline": {
+        "desc": "返回滑索起点（4 条路线共用）",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapNavigateAction",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "path": [
+                        {
+                            "action": "ZONE",
+                            "zone_id": "Wuling_Base"
+                        },
+                        [
+                            675,
+                            773,
+                            true
+                        ]
+                    ]
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryBackZiplineInteract"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已返回滑索起点"
+        }
+    },
+    "ExpressDeliveryBackZiplineInteract": {
+        "desc": "按住 Alt 点击初始滑索交互图标（4 条路线共用）",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "ExpressDeliveryZiplineLatchIcon"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "AutoAltClickAction",
+                "custom_action_param": {}
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWaitBackZiplineBoarded"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已点击初始滑索交互图标，等待登上初始滑索"
+        }
+    },
+    "ExpressDeliveryWaitBackZiplineBoarded": {
+        "desc": "等待返回路线时上滑索成功（4 条路线共用）",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InWorld"
+                ]
+            }
+        },
+        "inverse": true,
+        "pre_delay": 2000,
+        "post_delay": 0,
+        "timeout": 5000,
+        "rate_limit": 0,
+        "on_error": [
+            "ExpressDeliveryZiplineBoardFailed"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "已登上初始滑索"
+        }
+    },
+    "ExpressDeliveryRouteMaterialsResearchInstitute": {
+        "desc": "材料研究所：执行用户配置的滑索路线",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ExpressDeliveryRouteAction",
+                "custom_action_param": {
+                    "route": "",
+                    "target_name": "材料研究所"
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWaitWorldNormalMaterialsResearchInstitute"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "材料研究所：已完成滑索路线，到达目标附近终点滑索"
+        }
+    },
+    "ExpressDeliveryWaitWorldNormalMaterialsResearchInstitute": {
+        "desc": "材料研究所：等待下滑索后返回正常大世界状态",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InWorld"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWalkToDeliveryPointMaterialsResearchInstitute"
+        ]
+    },
+    "ExpressDeliveryWalkToDeliveryPointMaterialsResearchInstitute": {
+        "desc": "材料研究所：下滑索后自动寻路到送货点附近",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapNavigateAction",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "path": [
+                        {
+                            "action": "ZONE",
+                            "zone_id": "Wuling_Base"
+                        },
+                        [
+                            178,
+                            671
+                        ],
+                        [
+                            177,
+                            665
+                        ],
+                        [
+                            170,
+                            668,
+                            true
+                        ]
+                    ]
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryNpcDialogInteractMaterialsResearchInstitute"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "材料研究所：已完成下滑索后的自动寻路"
+        }
+    },
+    "ExpressDeliveryNpcDialogIcon": {
+        "desc": "识别完成运输用的 NPC 对话图标",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    755,
+                    330,
+                    297,
+                    312
+                ],
+                "template": "ExpressDelivery/NpcDialogIcon.png",
+                "threshold": 0.78,
+                "order_by": "Score"
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
+    "ExpressDeliveryNpcDialogInteractMaterialsResearchInstitute": {
+        "desc": "材料研究所：按住 Alt 点击 NPC 对话图标完成运输",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "ExpressDeliveryNpcDialogIcon"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "AutoAltClickAction",
+                "custom_action_param": {}
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "ExpressDeliveryAdvanceDeliveryDialog"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "材料研究所：已点击 NPC 对话图标，尝试完成运输"
+        }
+    },
+    "ExpressDeliveryAdvanceDeliveryDialog": {
+        "desc": "等待送货对话下一步按钮或奖励关闭按钮出现",
+        "recognition": {
+            "type": "Or",
+            "param": {
+                "any_of": [
+                    "CloseRewardsButton",
+                    "ExpressDeliveryDeliveryDialogNextButton"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "timeout": 15000,
+        "rate_limit": 0,
+        "next": [
+            "ExpressDeliveryCloseDeliveryRewards",
+            "ExpressDeliverySkipDeliveryDialogNext"
+        ],
+        "on_error": [
+            "ExpressDeliveryDeliveryFailed"
+        ]
+    },
+    "ExpressDeliveryDeliveryDialogNextButton": {
+        "desc": "识别送货对话下一步按钮",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    616,
+                    679,
+                    48,
+                    40
+                ],
+                "template": "RealTimeTask/AutoSkipNext2.png",
+                "threshold": 0.7
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
+    "ExpressDeliveryCloseDeliveryRewards": {
+        "desc": "识别奖励关闭按钮并完成当前送货流程",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "CloseRewardsButton"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryDeliveryDone"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已关闭运输完成奖励界面"
+        }
+    },
+    "ExpressDeliverySkipDeliveryDialogNext": {
+        "desc": "识别送货对话下一步按钮并继续点击",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "ExpressDeliveryDeliveryDialogNextButton"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryAdvanceDeliveryDialog"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已点击送货对话下一步"
+        }
+    },
+    "ExpressDeliveryDeliveryFailed": {
+        "desc": "送货对话超时未进入奖励关闭界面，判定当前目标失败",
+        "action": {
+            "type": "StopTask",
+            "param": {}
+        },
+        "focus": {
+            "Node.Action.Starting": "快递配送失败：长时间未识别到 CloseRewardsButton，请检查对话流程或识别图标"
+        }
+    },
+    "ExpressDeliveryDeliveryDone": {
+        "desc": "当前目标送货完成后停止",
+        "action": {
+            "type": "StopTask",
+            "param": {}
+        },
+        "focus": {
+            "Node.Action.Starting": "快递配送已完成当前目标的送货流程"
+        }
+    },
+    "ExpressDeliveryRouteResourceRecyclingStationCity": {
+        "desc": "资源回收站（城内）：执行用户配置的滑索路线",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ExpressDeliveryRouteAction",
+                "custom_action_param": {
+                    "route": "",
+                    "target_name": "资源回收站（城内）"
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWaitWorldNormalResourceRecyclingStationCity"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "资源回收站（城内）：已完成滑索路线，到达目标附近终点滑索"
+        }
+    },
+    "ExpressDeliveryWaitWorldNormalResourceRecyclingStationCity": {
+        "desc": "资源回收站（城内）：等待下滑索后返回正常大世界状态",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InWorld"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWalkToDeliveryPointResourceRecyclingStationCity"
+        ]
+    },
+    "ExpressDeliveryWalkToDeliveryPointResourceRecyclingStationCity": {
+        "desc": "资源回收站（城内）：下滑索后自动寻路到送货点附近",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapNavigateAction",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "path": [
+                        {
+                            "action": "ZONE",
+                            "zone_id": "Wuling_Base"
+                        },
+                        [
+                            226,
+                            596,
+                            true
+                        ]
+                    ]
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryGoodsDeliveryInteractResourceRecyclingStationCity"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "资源回收站（城内）：已完成下滑索后的自动寻路"
+        }
+    },
+    "ExpressDeliveryGoodsDeliveryIcon": {
+        "desc": "识别交货图标",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    755,
+                    330,
+                    297,
+                    312
+                ],
+                "template": "ExpressDelivery/GoodsDeliveryIcon.png",
+                "threshold": 0.78,
+                "order_by": "Score"
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
+    "ExpressDeliveryGoodsDeliveryInteractResourceRecyclingStationCity": {
+        "desc": "资源回收站（城内）：按住 Alt 点击交货图标完成交货",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "ExpressDeliveryGoodsDeliveryIcon"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "AutoAltClickAction",
+                "custom_action_param": {}
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "ExpressDeliveryWaitDeliveryRewardsResourceRecyclingStationCity"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "资源回收站（城内）：已点击交货图标，等待奖励界面"
+        }
+    },
+    "ExpressDeliveryWaitDeliveryRewardsResourceRecyclingStationCity": {
+        "desc": "资源回收站（城内）：等待奖励关闭按钮出现",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "CloseRewardsButton"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Click"
+        },
+        "post_delay": 0,
+        "timeout": 15000,
+        "next": [
+            "ExpressDeliveryDeliveryDone"
+        ],
+        "on_error": [
+            "ExpressDeliveryDeliveryFailed"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "资源回收站（城内）：已关闭运输完成奖励界面"
+        }
+    },
+    "ExpressDeliveryRouteTechnicalProductionOfficeOutskirts": {
+        "desc": "技术生产办公室（郊外）：执行用户配置的滑索路线",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ExpressDeliveryRouteAction",
+                "custom_action_param": {
+                    "route": "",
+                    "target_name": "技术生产办公室（郊外）"
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWaitWorldNormalTechnicalProductionOfficeOutskirts"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "技术生产办公室（郊外）：已完成滑索路线，到达目标附近终点滑索"
+        }
+    },
+    "ExpressDeliveryWaitWorldNormalTechnicalProductionOfficeOutskirts": {
+        "desc": "技术生产办公室（郊外）：等待下滑索后返回正常大世界状态",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InWorld"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWalkToDeliveryPointTechnicalProductionOfficeOutskirts"
+        ]
+    },
+    "ExpressDeliveryWalkToDeliveryPointTechnicalProductionOfficeOutskirts": {
+        "desc": "技术生产办公室（郊外）：下滑索后自动寻路到送货点附近",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapNavigateAction",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "path": [
+                        {
+                            "action": "ZONE",
+                            "zone_id": "Wuling_Base"
+                        },
+                        [
+                            251,
+                            207
+                        ],
+                        [
+                            246,
+                            207,
+                            true
+                        ]
+                    ]
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryNpcDialogInteractTechnicalProductionOfficeOutskirts"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "技术生产办公室（郊外）：已完成下滑索后的自动寻路"
+        }
+    },
+    "ExpressDeliveryNpcDialogInteractTechnicalProductionOfficeOutskirts": {
+        "desc": "技术生产办公室（郊外）：按住 Alt 点击 NPC 对话图标完成运输",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "ExpressDeliveryNpcDialogIcon"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "AutoAltClickAction",
+                "custom_action_param": {}
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "ExpressDeliveryAdvanceDeliveryDialog"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "技术生产办公室（郊外）：已点击 NPC 对话图标，尝试完成运输"
+        }
+    },
+    "ExpressDeliveryRouteObservatory": {
+        "desc": "观测站：执行用户配置的滑索路线",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ExpressDeliveryRouteAction",
+                "custom_action_param": {
+                    "route": "",
+                    "target_name": "观测站"
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWaitWorldNormalObservatory"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "观测站：已完成滑索路线，到达目标附近终点滑索"
+        }
+    },
+    "ExpressDeliveryWaitWorldNormalObservatory": {
+        "desc": "观测站：等待下滑索后返回正常大世界状态",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InWorld"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWalkToDeliveryPointObservatory"
+        ]
+    },
+    "ExpressDeliveryWalkToDeliveryPointObservatory": {
+        "desc": "观测站：下滑索后自动寻路到送货点附近",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapNavigateAction",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "path": [
+                        {
+                            "action": "ZONE",
+                            "zone_id": "Wuling_Base"
+                        },
+                        [
+                            610,
+                            366
+                        ],
+                        [
+                            599,
+                            366,
+                            true
+                        ]
+                    ]
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryNpcDialogInteractObservatory"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "观测站：已完成下滑索后的自动寻路"
+        }
+    },
+    "ExpressDeliveryNpcDialogInteractObservatory": {
+        "desc": "观测站：按住 Alt 点击 NPC 对话图标完成运输",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "ExpressDeliveryNpcDialogIcon"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "AutoAltClickAction",
+                "custom_action_param": {}
+            }
+        },
+        "post_delay": 1000,
+        "next": [
+            "ExpressDeliveryAdvanceDeliveryDialog"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "观测站：已点击 NPC 对话图标，尝试完成运输"
+        }
+    }
+}

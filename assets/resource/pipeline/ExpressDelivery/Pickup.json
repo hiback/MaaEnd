@@ -1,0 +1,351 @@
+{
+    "ExpressDeliveryTeleport": {
+        "desc": "无论当前位置如何，先传送到固定锚点",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "SubTask",
+                "custom_action_param": {
+                    "sub": [
+                        "SceneEnterWorldWulingWulingCity5"
+                    ]
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryInWorld"
+        ]
+    },
+    "ExpressDeliveryInWorld": {
+        "desc": "在大世界中时开始取货路线",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InWorld"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWalkToZipline"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "已到达快递配送起点锚点"
+        }
+    },
+    "ExpressDeliveryWalkToZipline": {
+        "desc": "前往滑索起点",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapNavigateAction",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "path": [
+                        {
+                            "action": "ZONE",
+                            "zone_id": "Wuling_Base"
+                        },
+                        [
+                            662,
+                            720,
+                            true
+                        ]
+                    ]
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryZiplineInteract"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已移动到滑索起点"
+        }
+    },
+    "ExpressDeliveryZiplineLatchIcon": {
+        "desc": "识别上滑索交互图标",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    755,
+                    330,
+                    297,
+                    312
+                ],
+                "template": "ExpressDelivery/ZiplineLatchIcon.png",
+                "threshold": 0.78
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
+    "ExpressDeliveryZiplineInteract": {
+        "desc": "按住 Alt 点击滑索交互图标",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "ExpressDeliveryZiplineLatchIcon"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "AutoAltClickAction",
+                "custom_action_param": {}
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWaitZiplineBoarded"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已点击滑索交互图标，等待登上滑索"
+        }
+    },
+    "ExpressDeliveryWaitZiplineBoarded": {
+        "desc": "等待首次上滑索成功",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InWorld"
+                ]
+            }
+        },
+        "inverse": true,
+        "pre_delay": 2000,
+        "post_delay": 0,
+        "timeout": 5000,
+        "rate_limit": 0,
+        "next": [
+            "ExpressDeliveryRoutePickupArea"
+        ],
+        "on_error": [
+            "ExpressDeliveryZiplineBoardFailed"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "已登上滑索"
+        }
+    },
+    "ExpressDeliveryZiplineBoardFailed": {
+        "desc": "点击上滑索图标后大世界 HUD 未消失，判定上滑索失败",
+        "action": {
+            "type": "StopTask",
+            "param": {}
+        },
+        "focus": {
+            "Node.Action.Starting": "快递配送失败：点击上滑索图标 2 秒后仍能识别到大世界 HUD，请检查上滑索交互位置或识别图标"
+        }
+    },
+    "ExpressDeliveryZiplineStationary": {
+        "desc": "基于小地图可见性判定角色是否静止（滑索停止态）",
+        "recognition": {
+            "type": "Custom",
+            "param": {
+                "custom_recognition": "ExpressDeliveryMinimapPresenceRecognition"
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
+    "ExpressDeliveryZiplinePrompt": {
+        "desc": "识别长距滑索的 E 键提示",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    1040,
+                    432,
+                    137,
+                    123
+                ],
+                "template": "RealTimeTask/Zipline.png",
+                "threshold": 0.8
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
+    "ExpressDeliveryRoutePickupArea": {
+        "desc": "执行前往取货区的滑索路线",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "ExpressDeliveryRouteAction",
+                "custom_action_param": {
+                    "route": "move:180,end",
+                    "target_name": "取货区"
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWaitWorldNormal"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已完成前往取货区的滑索路线"
+        }
+    },
+    "ExpressDeliveryWaitWorldNormal": {
+        "desc": "等待返回正常大世界状态",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "InWorld"
+                ]
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryWalkToPickupPoint"
+        ]
+    },
+    "ExpressDeliveryWalkToPickupPoint": {
+        "desc": "前往取货点",
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "MapNavigateAction",
+                "custom_action_param": {
+                    "map_name": "map02_lv002",
+                    "path": [
+                        {
+                            "action": "ZONE",
+                            "zone_id": "Wuling_Base"
+                        },
+                        [
+                            664,
+                            776,
+                            true
+                        ]
+                    ]
+                }
+            }
+        },
+        "post_delay": 0,
+        "next": [
+            "ExpressDeliveryPickupInteract"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已移动到取货点"
+        }
+    },
+    "ExpressDeliveryGoodsPickupIcon": {
+        "desc": "识别取货交互图标",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    755,
+                    330,
+                    297,
+                    312
+                ],
+                "template": "ExpressDelivery/GoodsPickupIcon.png",
+                "threshold": 0.78
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
+    "ExpressDeliveryPickupInteract": {
+        "desc": "按住 Alt 点击取货图标",
+        "recognition": {
+            "type": "And",
+            "param": {
+                "all_of": [
+                    "ExpressDeliveryGoodsPickupIcon"
+                ],
+                "box_index": 0
+            }
+        },
+        "pre_delay": 0,
+        "action": {
+            "type": "Custom",
+            "param": {
+                "custom_action": "AutoAltClickAction",
+                "custom_action_param": {}
+            }
+        },
+        "post_delay": 500,
+        "next": [
+            "ExpressDeliveryPickupConfirm"
+        ],
+        "focus": {
+            "Node.Action.Succeeded": "已完成取货交互"
+        }
+    },
+    "ExpressDeliveryPickupConfirm": {
+        "desc": "通过手持货物图标确认取货成功",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    160,
+                    40,
+                    100,
+                    80
+                ],
+                "template": "ExpressDelivery/GoodsInHandIcon.png",
+                "threshold": 0.8
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0,
+        "next": [
+            "ExpressDeliveryEnterBigMap"
+        ],
+        "focus": {
+            "Node.Recognition.Succeeded": "已确认货物在手，开始识别运送目标"
+        }
+    },
+    "ExpressDeliveryGoodsInHandIcon": {
+        "desc": "识别当前是否已手持货物",
+        "recognition": {
+            "type": "TemplateMatch",
+            "param": {
+                "roi": [
+                    160,
+                    40,
+                    100,
+                    80
+                ],
+                "template": "ExpressDelivery/GoodsInHandIcon.png",
+                "threshold": 0.8
+            }
+        },
+        "pre_delay": 0,
+        "post_delay": 0,
+        "rate_limit": 0
+    },
+    "ExpressDeliveryPickupDone": {
+        "desc": "当前阶段完成后停止，未来可继续接入落地送货流程",
+        "action": {
+            "type": "StopTask",
+            "param": {}
+        },
+        "focus": {
+            "Node.Action.Starting": "快递配送已完成当前目标的滑索流程，后续可继续接入落地送货流程"
+        }
+    }
+}
