@@ -122,7 +122,7 @@
                     "name": "WalkToZiplineX",
                     "label": "$option.ExpressDeliveryTeleportZiplineCoords.inputs.WalkToZiplineX.label",
                     "pipeline_type": "int",
-                    "default": "662",
+                    "default": "950",
                     "verify": "^\\d+$"
                 },
                 {
@@ -161,7 +161,7 @@
                     "name": "WalkBackToZiplineX",
                     "label": "$option.ExpressDeliveryDepotZiplineCoords.inputs.WalkBackToZiplineX.label",
                     "pipeline_type": "int",
-                    "default": "675",
+                    "default": "963",
                     "verify": "^\\d+$"
                 },
                 {
