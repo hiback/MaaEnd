@@ -124,7 +124,6 @@ func (r *MapTrackerFindMarkerOnBigMap) Run(ctx *maa.Context, arg *maa.CustomReco
 
 	screen := minicv.ImageConvertRGBA(arg.Img)
 	screenW, screenH := screen.Rect.Dx(), screen.Rect.Dy()
-	screenIntegral := minicv.GetIntegralArray(screen)
 
 	tw, th := tpl.Image.Rect.Dx(), tpl.Image.Rect.Dy()
 	cx := int(math.Round(targetScreenX))
@@ -153,17 +152,19 @@ func (r *MapTrackerFindMarkerOnBigMap) Run(ctx *maa.Context, arg *maa.CustomReco
 		return nil, false
 	}
 
-	matchX, matchY, score := minicv.MatchTemplateInArea(
-		screen,
-		screenIntegral,
-		tpl.Image,
-		tpl.Stats,
-		[4]int{rectX, rectY, rectW, rectH},
-	)
+	var matchX, matchY, score float64
 	if param.GreenMask {
 		matchX, matchY, score = matchTemplateInAreaWithGreenMask(
 			screen,
 			tpl.Image,
+			[4]int{rectX, rectY, rectW, rectH},
+		)
+	} else {
+		matchX, matchY, score = minicv.MatchTemplateInArea(
+			screen,
+			minicv.GetIntegralArray(screen),
+			tpl.Image,
+			tpl.Stats,
 			[4]int{rectX, rectY, rectW, rectH},
 		)
 	}

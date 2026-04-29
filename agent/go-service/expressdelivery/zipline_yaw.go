@@ -337,15 +337,18 @@ func resetZiplineHoverToCenter(ctx *maa.Context, beginX, beginY int) bool {
 	return true
 }
 
-func inferZiplineRotation(ctx *maa.Context) (*maptracker.MapTrackerInferResult, error) {
-	paramBytes, err := json.Marshal(map[string]any{
+var ziplineYawInferParamJSON = func() string {
+	b, err := json.Marshal(map[string]any{
 		"map_name_regex": expressDeliveryMapNameRegex,
 		"precision":      1.0,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("marshal infer params: %w", err)
+		panic(fmt.Errorf("marshal zipline yaw infer params: %w", err))
 	}
+	return string(b)
+}()
 
+func inferZiplineRotation(ctx *maa.Context) (*maptracker.MapTrackerInferResult, error) {
 	taskDetail, err := ctx.GetTaskJob().GetDetail()
 	if err != nil {
 		return nil, fmt.Errorf("get task detail: %w", err)
@@ -361,11 +364,11 @@ func inferZiplineRotation(ctx *maa.Context) (*maptracker.MapTrackerInferResult, 
 			continue
 		}
 
-		resultWrapper, hit := (&maptracker.MapTrackerInfer{}).Run(ctx, &maa.CustomRecognitionArg{
+		resultWrapper, hit := maptracker.RunInfer(ctx, &maa.CustomRecognitionArg{
 			TaskID:                 taskDetail.ID,
 			CurrentTaskName:        taskDetail.Entry,
 			CustomRecognitionName:  "MapTrackerInfer",
-			CustomRecognitionParam: string(paramBytes),
+			CustomRecognitionParam: ziplineYawInferParamJSON,
 			Img:                    img,
 			Roi:                    maa.Rect{0, 0, 0, 0},
 		})

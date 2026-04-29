@@ -105,43 +105,53 @@ func (r *MinimapPresenceRecognition) Run(_ *maa.Context, arg *maa.CustomRecognit
 	return recoResult, result.Hit
 }
 
-// sampleInnerOuter 按 minimapSampleCount 均匀分角度生成内外采样点，
-// 并从 img 对应像素位置读取 RGBA 值。调用方需先用 samplePointsInBounds 确保所有点在图像内。
-func sampleInnerOuter(img *image.RGBA) (inner, outer []color.RGBA) {
-	inner = make([]color.RGBA, minimapSampleCount)
-	outer = make([]color.RGBA, minimapSampleCount)
+// minimapSamplePoint 是一对内外采样点的屏幕坐标。
+type minimapSamplePoint struct {
+	Inner image.Point
+	Outer image.Point
+}
+
+// minimapSamplePoints 是按 minimapSampleCount 均匀分角度的内外采样点坐标。
+// 这些坐标只与几何常量有关，与帧无关，进程启动时计算一次后即只读复用，
+// 避免每次 Run 都重算 16×4 次三角函数与 round。
+var minimapSamplePoints = func() [minimapSampleCount]minimapSamplePoint {
+	var pts [minimapSampleCount]minimapSamplePoint
 	innerR := float64(minimapRadius - minimapInnerOffset)
 	outerR := float64(minimapRadius + minimapOuterOffset)
 	for i := 0; i < minimapSampleCount; i++ {
 		theta := 2 * math.Pi * float64(i) / float64(minimapSampleCount)
 		dx := math.Cos(theta)
 		dy := math.Sin(theta)
-		ix := int(math.Round(float64(minimapCenterX) + dx*innerR))
-		iy := int(math.Round(float64(minimapCenterY) + dy*innerR))
-		ox := int(math.Round(float64(minimapCenterX) + dx*outerR))
-		oy := int(math.Round(float64(minimapCenterY) + dy*outerR))
-		inner[i] = img.RGBAAt(ix, iy)
-		outer[i] = img.RGBAAt(ox, oy)
+		pts[i] = minimapSamplePoint{
+			Inner: image.Point{
+				X: int(math.Round(float64(minimapCenterX) + dx*innerR)),
+				Y: int(math.Round(float64(minimapCenterY) + dy*innerR)),
+			},
+			Outer: image.Point{
+				X: int(math.Round(float64(minimapCenterX) + dx*outerR)),
+				Y: int(math.Round(float64(minimapCenterY) + dy*outerR)),
+			},
+		}
+	}
+	return pts
+}()
+
+// sampleInnerOuter 按预计算的采样点从 img 读取 RGBA 值。
+// 调用方需先用 samplePointsInBounds 确保所有点在图像内。
+func sampleInnerOuter(img *image.RGBA) (inner, outer []color.RGBA) {
+	inner = make([]color.RGBA, minimapSampleCount)
+	outer = make([]color.RGBA, minimapSampleCount)
+	for i, pt := range minimapSamplePoints {
+		inner[i] = img.RGBAAt(pt.Inner.X, pt.Inner.Y)
+		outer[i] = img.RGBAAt(pt.Outer.X, pt.Outer.Y)
 	}
 	return inner, outer
 }
 
 // samplePointsInBounds 返回 true 当且仅当所有内外采样点都落在 bounds 内。
 func samplePointsInBounds(bounds image.Rectangle) bool {
-	innerR := float64(minimapRadius - minimapInnerOffset)
-	outerR := float64(minimapRadius + minimapOuterOffset)
-	for i := 0; i < minimapSampleCount; i++ {
-		theta := 2 * math.Pi * float64(i) / float64(minimapSampleCount)
-		dx := math.Cos(theta)
-		dy := math.Sin(theta)
-		ix := int(math.Round(float64(minimapCenterX) + dx*innerR))
-		iy := int(math.Round(float64(minimapCenterY) + dy*innerR))
-		ox := int(math.Round(float64(minimapCenterX) + dx*outerR))
-		oy := int(math.Round(float64(minimapCenterY) + dy*outerR))
-		if !(image.Point{X: ix, Y: iy}.In(bounds)) {
-			return false
-		}
-		if !(image.Point{X: ox, Y: oy}.In(bounds)) {
+	for _, pt := range minimapSamplePoints {
+		if !pt.Inner.In(bounds) || !pt.Outer.In(bounds) {
 			return false
 		}
 	}

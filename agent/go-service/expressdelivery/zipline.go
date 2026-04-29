@@ -116,13 +116,6 @@ func (a *TraverseZiplineAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) 
 		if !waitForTraverseFinish(ctx, params, params.CompletionTimeout-promptGone.elapsedMs(), 0) {
 			return false
 		}
-	default:
-		log.Error().
-			Str("component", "ExpressDelivery").
-			Str("action", "TraverseZipline").
-			Str("start_mode", params.StartMode).
-			Msg("unsupported zipline start mode")
-		return false
 	}
 	return true
 }

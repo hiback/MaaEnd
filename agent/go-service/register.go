@@ -21,7 +21,6 @@ import (
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/dailyrewards"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/essencefilter"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/expressdelivery"
-	"github.com/MaaXYZ/MaaEnd/agent/go-service/expressionrecognition"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/itemtransfer"
 	maptracker "github.com/MaaXYZ/MaaEnd/agent/go-service/map-tracker"
 	"github.com/MaaXYZ/MaaEnd/agent/go-service/pkg/resource"

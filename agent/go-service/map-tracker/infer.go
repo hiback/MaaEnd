@@ -108,6 +108,14 @@ type InferRotationRawResult struct {
 
 var mapTrackerInferRunner maa.CustomRecognitionRunner = &MapTrackerInfer{}
 
+// RunInfer dispatches to the package-level MapTrackerInfer singleton.
+// External packages must use this entry point rather than constructing a fresh
+// &MapTrackerInfer{}, otherwise the per-instance scaledMaps cache is bypassed
+// on every call and every frame triggers a full map rescale.
+func RunInfer(ctx *maa.Context, arg *maa.CustomRecognitionArg) (*maa.CustomRecognitionResult, bool) {
+	return mapTrackerInferRunner.Run(ctx, arg)
+}
+
 // Run implements maa.CustomRecognitionRunner
 func (i *MapTrackerInfer) Run(ctx *maa.Context, arg *maa.CustomRecognitionArg) (*maa.CustomRecognitionResult, bool) {
 	// Parse custom recognition parameters

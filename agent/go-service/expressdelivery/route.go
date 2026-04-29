@@ -58,18 +58,18 @@ func (a *RouteAction) Run(ctx *maa.Context, arg *maa.CustomActionArg) bool {
 
 	steps, err := parseRoute(params.Route)
 	if err != nil {
-		maafocus.Print(ctx, fmt.Sprintf("%s滑索路线格式错误：%v", displayTargetName(params.TargetName), err))
+		maafocus.Print(ctx, fmt.Sprintf("%s滑索路线格式错误：%v", params.TargetName, err))
 		log.Error().
 			Err(err).
 			Str("component", "ExpressDelivery").
 			Str("action", "RouteAction").
-			Str("target", displayTargetName(params.TargetName)).
+			Str("target", params.TargetName).
 			Str("route", params.Route).
 			Msg("invalid route expression")
 		return false
 	}
 
-	targetName := displayTargetName(params.TargetName)
+	targetName := params.TargetName
 	if len(steps) == 0 {
 		maafocus.Print(ctx, fmt.Sprintf("未配置%s滑索路线指令，任务已停止", targetName))
 		log.Error().
@@ -127,6 +127,10 @@ func parseRouteParams(arg *maa.CustomActionArg) (*routeParams, error) {
 	var params routeParams
 	if err := json.Unmarshal([]byte(arg.CustomActionParam), &params); err != nil {
 		return nil, err
+	}
+	params.TargetName = strings.TrimSpace(params.TargetName)
+	if params.TargetName == "" {
+		return nil, fmt.Errorf("target_name must not be empty")
 	}
 	return &params, nil
 }
@@ -354,10 +358,3 @@ func finishModeFailureText(finishMode string) string {
 	return "识别到滑索静止提示"
 }
 
-func displayTargetName(name string) string {
-	trimmed := strings.TrimSpace(name)
-	if trimmed == "" {
-		return "目标"
-	}
-	return trimmed
-}

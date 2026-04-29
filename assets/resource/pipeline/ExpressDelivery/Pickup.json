@@ -319,25 +319,6 @@
             "Node.Recognition.Succeeded": "已确认货物在手，开始识别运送目标"
         }
     },
-    "ExpressDeliveryGoodsInHandIcon": {
-        "desc": "识别当前是否已手持货物",
-        "recognition": {
-            "type": "TemplateMatch",
-            "param": {
-                "roi": [
-                    160,
-                    40,
-                    100,
-                    80
-                ],
-                "template": "ExpressDelivery/GoodsInHandIcon.png",
-                "threshold": 0.8
-            }
-        },
-        "pre_delay": 0,
-        "post_delay": 0,
-        "rate_limit": 0
-    },
     "ExpressDeliveryPickupDone": {
         "desc": "当前阶段完成后停止，未来可继续接入落地送货流程",
         "action": {
